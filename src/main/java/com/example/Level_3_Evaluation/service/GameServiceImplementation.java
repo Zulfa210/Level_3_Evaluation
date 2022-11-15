@@ -36,6 +36,7 @@ public class GameServiceImplementation implements GameService{
             Player secondPlayer = playerRepository.findById(gameDto.getSecondPlayerId()).orElse(null);
             System.out.println(secondPlayer);
             if(firstPlayer!=null && secondPlayer!= null) {
+                game.setGameName(gameDto.getGameName());
                 game.setFirstPlayer(firstPlayer);
                 game.setSecondPlayer(secondPlayer);
                 SimpleDateFormat format = new SimpleDateFormat("yyyy-mm-dd'T'hh:mm:sss");
@@ -44,14 +45,21 @@ public class GameServiceImplementation implements GameService{
                 Position firstPlayerPosition = new Position();
                 firstPlayerPosition.setPlayerPositionXCoordinate(0);
                 firstPlayerPosition.setPlayerPositionXCoordinate(0);
+                firstPlayerPosition.setPlayer(firstPlayer);
                 firstPlayer.setPlayerPosition(firstPlayerPosition);
                 firstPlayer.setPlaying(true);
+                firstPlayer.setPlayerHealth(100);
+                firstPlayer.getPlayedGames().add(game);
+
 
                 Position secondPlayerPosition = new Position();
                 secondPlayerPosition.setPlayerPositionXCoordinate(0);
                 secondPlayerPosition.setPlayerPositionXCoordinate(10);
+                secondPlayerPosition.setPlayer(secondPlayer);
                 secondPlayer.setPlayerPosition(secondPlayerPosition);
                 secondPlayer.setPlaying(true);
+                secondPlayer.setPlayerHealth(100);
+                secondPlayer.getPlayedGames().add(game);
                 return gameRepository.save(game);
             }
             return null;

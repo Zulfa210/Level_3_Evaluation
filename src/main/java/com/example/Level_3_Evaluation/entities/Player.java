@@ -1,6 +1,8 @@
 package com.example.Level_3_Evaluation.entities;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Data;
+import lombok.ToString;
 
 import javax.persistence.*;
 import java.util.List;
@@ -10,6 +12,7 @@ import java.util.List;
  */
 
 @Data
+@ToString(exclude = "playedGames")
 @Entity
 public class Player {
 
@@ -18,7 +21,7 @@ public class Player {
     private long playerId;
     private String playerName;
 
-    @OneToOne(mappedBy = "player")
+    @OneToOne(mappedBy = "player", cascade = CascadeType.PERSIST)
     private Position playerPosition;
 
 
@@ -26,9 +29,14 @@ public class Player {
     private int playerTotalScore;
     private boolean isPlaying;
 
-    @ManyToMany(cascade = CascadeType.PERSIST)
+    @JsonIgnore
+    @ManyToMany(cascade = CascadeType.ALL)
     @JoinTable(joinColumns = @JoinColumn(name = "player_id", referencedColumnName ="playerId" ),
     inverseJoinColumns = @JoinColumn(name = "game_played_id", referencedColumnName = "gameId"))
     private List<Game> playedGames;
+
+    @JsonIgnore
+    @OneToOne(mappedBy = "player")
+    private Leaderboard positionOnLeaderBoard;
 
 }

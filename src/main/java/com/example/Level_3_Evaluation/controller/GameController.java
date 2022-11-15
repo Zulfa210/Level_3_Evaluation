@@ -27,38 +27,42 @@ public class GameController {
     PlayerService playerService;
 
     @RequestMapping("/createPlayer")
-    public ResponseEntity createPlayer(@RequestBody PlayerDto playerDto){
-        try{
+    public ResponseEntity createPlayer(@RequestBody PlayerDto playerDto) {
+        try {
             return new ResponseEntity(playerService.createPlayer(playerDto), HttpStatus.OK);
-        }catch(Exception e){
+        } catch (Exception e) {
             return new ResponseEntity(HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
 
     @RequestMapping("/createGame")
-    public ResponseEntity createGame(@RequestBody GameDto gameDto){
-        try{
+    public ResponseEntity createGame(@RequestBody GameDto gameDto) {
+        try {
             return new ResponseEntity(gameService.createGame(gameDto), HttpStatus.OK);
-        }catch(Exception e){
+        } catch (Exception e) {
             return new ResponseEntity(HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
 
     @RequestMapping("/movePlayer")
-    public ResponseEntity movePlayer(@RequestBody MovePlayerDto movePlayerDto){
-        try{
+    public ResponseEntity movePlayer(@RequestBody MovePlayerDto movePlayerDto) {
+        try {
+            System.out.println(movePlayerDto);
             return new ResponseEntity(playerService.movePlayer(movePlayerDto), HttpStatus.OK);
-        }catch(Exception e){
-            return new ResponseEntity(HttpStatus.INTERNAL_SERVER_ERROR);
+        } catch (Exception exception) {
+
+            exception.printStackTrace();
+            return null;
         }
     }
 
-    @RequestMapping("/firePlayer")
-    public ResponseEntity firePlayer(@RequestBody FireDto fireDto){
-        try{
-            return new ResponseEntity(playerService.firePlayer(fireDto), HttpStatus.OK);
-        }catch(Exception e){
-            return new ResponseEntity(HttpStatus.INTERNAL_SERVER_ERROR);
+        @RequestMapping("/firePlayer")
+        public ResponseEntity firePlayer (@RequestBody FireDto fireDto){
+            try {
+                return new ResponseEntity(playerService.firePlayer(fireDto), HttpStatus.OK);
+            } catch (Exception e) {
+                e.printStackTrace();
+                return new ResponseEntity(HttpStatus.INTERNAL_SERVER_ERROR);
+            }
         }
     }
-}

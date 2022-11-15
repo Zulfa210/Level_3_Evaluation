@@ -56,28 +56,29 @@ public class PlayerServiceImplementation implements PlayerService {
 
     @Override
     public Game firePlayer(FireDto fireDto) {
-
+        System.out.println(fireDto);
         Player firingPlayer = playerRepository.findById(fireDto.getFiringPlayerId()).orElse(null);
-        Player opponentPlayer = playerRepository.findById(fireDto.getFiringPlayerId()).orElse(null);
+        Player opponentPlayer = playerRepository.findById(fireDto.getOpponentId()).orElse(null);
         Game game =  gameRepository.findById(fireDto.getGameId()).orElse(null);
 
-        if(fireDto.getXCoordinate() == opponentPlayer.getPlayerPosition().getPlayerPositionYCoordinate()
+        if(fireDto.getXCoordinate() == opponentPlayer.getPlayerPosition().getPlayerPositionXCoordinate()
         && fireDto.getYCoordinate() == opponentPlayer.getPlayerPosition().getPlayerPositionYCoordinate()){
-            int score = firingPlayer.getPlayerTotalScore();
-            firingPlayer.setPlayerTotalScore(score+ 20);
+            int health = firingPlayer.getPlayerHealth();
+            firingPlayer.setPlayerTotalScore(health - 20);
 
-            if(firingPlayer.getPlayerTotalScore()  == 100){
+            if(opponentPlayer.getPlayerHealth() ==0){
 
 
                if(game != null){
                    game.setWinningPlayer(firingPlayer);
                }
+               firingPlayer.setPlayerTotalScore(firingPlayer.getPlayerTotalScore()+100);
                firingPlayer.setPlayerPosition(null);
                opponentPlayer.setPlayerPosition(null);
                firingPlayer.setPlaying(false);
                opponentPlayer.setPlaying(false);
-               positionRepository .delete(positionRepository.findByPlayer(firingPlayer));
-               positionRepository.delete(positionRepository.findByPlayer(opponentPlayer));
+              // positionRepository .deleteById(positionRepository.findByPlayer(firingPlayer).getPositionId());
+               //positionRepository.deleteById(positionRepository.findByPlayer(opponentPlayer).getPositionId());
 
 
             }
@@ -90,6 +91,7 @@ public class PlayerServiceImplementation implements PlayerService {
 
     @Override
     public int movePlayer(MovePlayerDto movePlayerDto) {
+        System.out.println(movePlayerDto);
         Player player = playerRepository.findById(movePlayerDto.getPlayerId()).orElse(null);
 
         if(player!=null){
@@ -98,29 +100,30 @@ public class PlayerServiceImplementation implements PlayerService {
                     movePlayerDto.getYCoordinate()
             ).orElse(null);
 
-
-            if(position.getPlayer() != null){
+            System.out.println(position);
+            System.out.println(player);
+            if(position != null){
                 throw new PositionOccupiedException();
             }else{
-
                 Position existingPosition = player.getPlayerPosition();
+                System.out.println(existingPosition);
                 if(existingPosition.getPlayerPositionXCoordinate() - movePlayerDto.getXCoordinate() >1 ||
                         existingPosition.getPlayerPositionYCoordinate() - movePlayerDto.getYCoordinate() >1||
                         existingPosition.getPlayerPositionXCoordinate() - movePlayerDto.getXCoordinate() <-1 ||
                         existingPosition.getPlayerPositionYCoordinate() - movePlayerDto.getYCoordinate() <-1) {
                    return 0;
                 }else{
-                    player.setPlayerPosition(position);
-                    position.setPlayer(player);
+                    existingPosition.setPlayerPositionXCoordinate(movePlayerDto.getXCoordinate());
+                    existingPosition.setPlayerPositionYCoordinate(movePlayerDto.getYCoordinate());
+                    player.setPlayerPosition(existingPosition);
+                   // position.setPlayer(player);
                     playerRepository.save(player);
-                    positionRepository.save(position);
+                    positionRepository.save(existingPosition);
                     return 1;
                 }
             }
-
         }
         return 0;
     }
-
 
 }

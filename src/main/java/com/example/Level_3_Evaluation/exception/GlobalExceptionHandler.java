@@ -13,7 +13,7 @@ import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExcep
 public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
 
     @ExceptionHandler(PositionOccupiedException.class)
-    public ResponseEntity positionOccupied(String message){
-        return new ResponseEntity(message, HttpStatus.NOT_ACCEPTABLE);
+    public ResponseEntity positionOccupied(Exception exception){
+        return new ResponseEntity(exception.getMessage(), HttpStatus.NOT_ACCEPTABLE);
     }
 }
